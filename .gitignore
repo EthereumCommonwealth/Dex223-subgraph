@@ -1,0 +1,10 @@
+build/
+node_modules/
+src/types/
+.DS_STORE
+yarn-error.log
+.env
+tests/.bin
+tests/.docker
+tests/.env
+.vscode/
