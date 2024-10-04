@@ -391,6 +391,16 @@
         "internalType": "uint128",
         "name": "amount1Requested",
         "type": "uint128"
+      },
+      {
+        "internalType": "bool",
+        "name": "token0_223",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "token1_223",
+        "type": "bool"
       }
     ],
     "name": "collect",
@@ -425,6 +435,16 @@
         "internalType": "uint128",
         "name": "amount1Requested",
         "type": "uint128"
+      },
+      {
+        "internalType": "bool",
+        "name": "token0_223",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "token1_223",
+        "type": "bool"
       }
     ],
     "name": "collectProtocol",
@@ -441,6 +461,19 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "converter",
+    "outputs": [
+      {
+        "internalType": "contract ITokenStandardConverter",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -493,34 +526,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount0",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount1",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "flash",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -623,7 +628,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "index",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -678,10 +683,23 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "pool_lib",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "key",
+        "name": "",
         "type": "bytes32"
       }
     ],
@@ -689,7 +707,7 @@
     "outputs": [
       {
         "internalType": "uint128",
-        "name": "_liquidity",
+        "name": "liquidity",
         "type": "uint128"
       },
       {
@@ -732,6 +750,34 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_t0erc223",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_t1erc223",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_library",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_converter",
+        "type": "address"
+      }
+    ],
+    "name": "set",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -852,6 +898,11 @@
         "type": "uint160"
       },
       {
+        "internalType": "bool",
+        "name": "prefer223",
+        "type": "bool"
+      },
+      {
         "internalType": "bytes",
         "name": "data",
         "type": "bytes"
@@ -876,8 +927,80 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "zeroForOne",
+        "type": "bool"
+      },
+      {
+        "internalType": "int256",
+        "name": "amountSpecified",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountOutMinimum",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint160",
+        "name": "sqrtPriceLimitX96",
+        "type": "uint160"
+      },
+      {
+        "internalType": "bool",
+        "name": "prefer223",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "unwrapETH",
+        "type": "bool"
+      }
+    ],
+    "name": "swapExactInput",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amountOut",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "swap_sender",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "int16",
-        "name": "wordPosition",
+        "name": "",
         "type": "int16"
       }
     ],
@@ -909,7 +1032,7 @@
     "inputs": [
       {
         "internalType": "int24",
-        "name": "tick",
+        "name": "",
         "type": "int24"
       }
     ],
@@ -965,7 +1088,12 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "erc20",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "erc223",
         "type": "address"
       }
     ],
@@ -978,11 +1106,72 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "erc20",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "erc223",
         "type": "address"
       }
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_data",
+        "type": "bytes"
+      }
+    ],
+    "name": "tokenReceived",
+    "outputs": [
+      {
+        "internalType": "bytes4",
+        "name": "",
+        "type": "bytes4"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "WETH9",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountOut",
+        "type": "uint256"
+      }
+    ],
+    "name": "unwrapWETH9",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

@@ -1,6 +1,6 @@
 const WETH = '0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa'
 const DAI = '0x1e6951b73f44E7C71B43Dfc1FFA63cA2eab2cEdA'
-const USDC = '0xb2E07B4536b2e35D41DCb9B9c4F5C86E89a42663'
+const USDC = '0x44649C38615AD4426c16Cd5d5059E6E74B87234A'
 const USDT = '0x8dD8F439D3478Badb814F7b84d7a06d467eD3812'
 
 /**
@@ -10,22 +10,17 @@ module.exports = {
   network: 'sepolia',
   WETH: WETH.toLowerCase(),
   v1: {
-    WETH_USDC_03_POOL: '0xC6F53004069bD066EC33C13F0B43E1212B9053D6'.toLowerCase(),
+    WETH_USDC_03_POOL: '0xc1ae0a4782a42a76637ab49001f1f370888053da'.toLowerCase(),
     contracts: {
       factory: {
         name: 'Factory',
         address: '0xC7D28E12Bc1744Ac2C78A893F6282412e6D620ab'.toLowerCase(),
         startBlock: 5920069
       },
-      nonfungiblePositionManager: {
-        name: 'NonfungiblePositionManager',
-        address: '0x70f4524cc98B9F3b0505430a94a2Fc2a7cbDAA27'.toLowerCase(),
-        startBlock: 5941286
-      },
       tokenConverter: {
         name: 'TokenConverter',
-        address: '0x1245c83de3cc16193de8777ed597b677d789ac94'.toLowerCase(),
-        startBlock: 5814218
+        address: '0x044845FB22B4258d83a6c24b2fB061AFEba7e5b9'.toLowerCase(),
+        startBlock: 6794913
       }
     },
     stableCoins: [DAI, USDC, USDT].map(token => token.toLowerCase()),
