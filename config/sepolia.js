@@ -1,6 +1,6 @@
-const WETH = '0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa'
+const WETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
 const DAI = '0x1e6951b73f44E7C71B43Dfc1FFA63cA2eab2cEdA'
-const USDC = '0x44649C38615AD4426c16Cd5d5059E6E74B87234A'
+const USDC = '0x44649c38615ad4426c16cd5d5059e6e74b87234a'
 const USDT = '0x8dD8F439D3478Badb814F7b84d7a06d467eD3812'
 
 /**
@@ -10,12 +10,12 @@ module.exports = {
   network: 'sepolia',
   WETH: WETH.toLowerCase(),
   v1: {
-    WETH_USDC_03_POOL: '0xc1ae0a4782a42a76637ab49001f1f370888053da'.toLowerCase(),
+    WETH_USDC_03_POOL: '0xc1ae0A4782A42A76637AB49001F1F370888053DA'.toLowerCase(),
     contracts: {
       factory: {
         name: 'Factory',
-        address: '0xC7D28E12Bc1744Ac2C78A893F6282412e6D620ab'.toLowerCase(),
-        startBlock: 5920069
+        address: '0x8524c3bD49Cd455EA0102BF194AdD2F21165E049'.toLowerCase(),
+        startBlock: 6794948
       },
       tokenConverter: {
         name: 'TokenConverter',
