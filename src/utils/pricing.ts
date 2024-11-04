@@ -12,7 +12,6 @@ import {
   MINIMUM_ETH_LOCKED,
   Q192
 } from './constants'
-import { log } from 'matchstick-as'
 
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
   const num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal()

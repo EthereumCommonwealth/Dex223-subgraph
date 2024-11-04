@@ -6,16 +6,16 @@ import { TokenConverter as TokenConverterContract } from '../types/templates/Poo
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const FACTORY_ADDRESS = '0x8524c3bd49cd455ea0102bf194add2f21165e049'
-export const TOKEN_CONVERTER_ADDRESS = '0x044845fb22b4258d83a6c24b2fb061afeba7e5b9'
+export const TOKEN_CONVERTER_ADDRESS = '0x18eedef5d3d21c2828ca8557bef7210bfa481bc2'
 
-export const WETH_ADDRESS = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
-export const USDC_WETH_03_POOL = '0xc1ae0a4782a42a76637ab49001f1f370888053da'
+export const WETH_ADDRESS = '0xae13d989dac2f0debff460ac112a837c89baa7cd'
+export const USDC_WETH_03_POOL = '0x76e82368c26488d4daf3008a92dde2477f0bcca6'
 
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with s
-export const WHITELIST_TOKENS: string[] = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14,0x44649c38615ad4426c16cd5d5059e6e74b87234a,0x8dd8f439d3478badb814f7b84d7a06d467ed3812,0x1e6951b73f44e7c71b43dfc1ffa63ca2eab2ceda'.split(',')
+export const WHITELIST_TOKENS: string[] = '0xae13d989dac2f0debff460ac112a837c89baa7cd,0x431cc175bafb82c2415a94ef6103e124f289959e'.split(',')
 
-export const STABLE_COINS: string[] = '0x1e6951b73f44e7c71b43dfc1ffa63ca2eab2ceda,0x44649c38615ad4426c16cd5d5059e6e74b87234a,0x8dd8f439d3478badb814f7b84d7a06d467ed3812'.split(',')
+export const STABLE_COINS: string[] = '0x431cc175bafb82c2415a94ef6103e124f289959e'.split(',')
 export const STABLECOIN_IS_TOKEN0 = true
 
 
