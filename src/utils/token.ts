@@ -154,7 +154,7 @@ export function fetchTokenDecimals(
 export function fetchTokenInConverter(addressERC20: Address): boolean {
   let result = tokenConverterContract.try_getERC223WrapperFor(addressERC20)
   if (!result.reverted) {
-    return result.value.getValue0().toHexString() != '0x0000000000000000000000000000000000000000'
+    return result.value.toHexString() != '0x0000000000000000000000000000000000000000'
   }
   return false
 }
