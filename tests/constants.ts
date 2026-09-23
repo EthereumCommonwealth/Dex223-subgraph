@@ -127,20 +127,17 @@ export const invokePoolCreatedWithMockedEthCalls = (
     createMockedFunction(
       Address.fromString(TOKEN_CONVERTER_ADDRESS),
       'getERC223WrapperFor',
-      'getERC223WrapperFor(address):(address,string)'
+      'getERC223WrapperFor(address):(address)'
     )
       .withArgs([ethereum.Value.fromAddress(Address.fromString(token.addressERC20))])
-      .returns([
-        ethereum.Value.fromAddress(Address.fromString(token.addressERC223)),
-        ethereum.Value.fromString('ERC-223')
-      ])
+      .returns([ethereum.Value.fromAddress(Address.fromString(token.addressERC223))])
     createMockedFunction(
       Address.fromString(TOKEN_CONVERTER_ADDRESS),
       'getERC223WrapperFor',
-      'getERC223WrapperFor(address):(address,string)'
+      'getERC223WrapperFor(address):(address)'
     )
       .withArgs([ethereum.Value.fromAddress(Address.fromString(token.addressERC223))])
-      .returns([ethereum.Value.fromAddress(Address.fromString(ADDRESS_ZERO)), ethereum.Value.fromString('Error')])
+      .returns([ethereum.Value.fromAddress(Address.fromString(ADDRESS_ZERO))])
   }
 
   handlePoolCreatedHelper(poolCreatedEvent, factoryAddress, [token0.addressERC20, token1.addressERC20])
