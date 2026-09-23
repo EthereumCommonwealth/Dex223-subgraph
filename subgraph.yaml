@@ -9,11 +9,11 @@ features:
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: chapel
+    network: sepolia
     source:
-      address: '0x8524c3bd49cd455ea0102bf194add2f21165e049'
+      address: '0xea0a163e0196bf1500b1b41d3adda0476dc137eb'
       abi: factory
-      startBlock: 44378995
+      startBlock: 11755632
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -40,11 +40,11 @@ dataSources:
           handler: handlePoolCreated
   - kind: ethereum/contract
     name: TokenConverter
-    network: chapel
+    network: sepolia
     source:
-      address: '0x18eedef5d3d21c2828ca8557bef7210bfa481bc2'
+      address: '0xa7d623dd99fae6f03bb4a427f1b3ff29fb130108'
       abi: TokenConverter
-      startBlock: 44378912
+      startBlock: 11755626
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -66,7 +66,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pool
-    network: chapel
+    network: sepolia
     source:
       abi: Pool
     mapping:

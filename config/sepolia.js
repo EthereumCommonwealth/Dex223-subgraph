@@ -10,17 +10,19 @@ module.exports = {
   network: 'sepolia',
   WETH: WETH.toLowerCase(),
   v1: {
-    WETH_USDC_03_POOL: '0xc1ae0A4782A42A76637AB49001F1F370888053DA'.toLowerCase(),
+    // CREATE2 for USDC/WETH 0.3% on factory 0xeA0A… (may not exist until created).
+    WETH_USDC_03_POOL: '0x6ab29B6DfaB7E06dEf97f20E619F653Cb3C6fc89'.toLowerCase(),
     contracts: {
       factory: {
         name: 'Factory',
-        address: '0x8524c3bD49Cd455EA0102BF194AdD2F21165E049'.toLowerCase(),
-        startBlock: 6794948
+        // Sepolia redeploy 2026-09-21 (same CREATE2 address as mainnet).
+        address: '0xeA0A163e0196Bf1500B1B41d3ADdA0476dC137eb'.toLowerCase(),
+        startBlock: 11755632
       },
       tokenConverter: {
         name: 'TokenConverter',
-        address: '0x044845FB22B4258d83a6c24b2fB061AFEba7e5b9'.toLowerCase(),
-        startBlock: 6794913
+        address: '0xa7d623Dd99fae6f03Bb4A427F1b3FF29fb130108'.toLowerCase(),
+        startBlock: 11755626
       }
     },
     stableCoins: [DAI, USDC, USDT].map(token => token.toLowerCase()),
