@@ -103,7 +103,7 @@ export function handlePoolCreatedHelper(
     token1.symbol = fetchTokenSymbol(token1AddressERC20, token1AddressERC223, staticTokenDefinitions)
     token1.name = fetchTokenName(token1AddressERC20, token1AddressERC223, staticTokenDefinitions)
     token1.totalSupply = fetchTokenTotalSupply(token1AddressERC20, token1AddressERC223)
-    token1.addressERC223 = token1AddressERC20.toHexString() || ADDRESS_ZERO
+    token1.addressERC223 = token1AddressERC223.toHexString() || ADDRESS_ZERO
 
     const decimals = fetchTokenDecimals(token1AddressERC20, token1AddressERC223, staticTokenDefinitions)
     // bail if we couldn't figure out the decimals
