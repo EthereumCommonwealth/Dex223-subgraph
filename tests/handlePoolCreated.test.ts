@@ -74,6 +74,7 @@ describe('handlePoolCreated', () => {
       ['name', WETH_MAINNET_FIXTURE.name],
       ['totalSupply', WETH_MAINNET_FIXTURE.totalSupply],
       ['decimals', WETH_MAINNET_FIXTURE.decimals],
+      ['addressERC223', WETH_MAINNET_FIXTURE.addressERC223],
       ['derivedETH', '0'],
       ['volume', '0'],
       ['volumeUSD', '0'],
