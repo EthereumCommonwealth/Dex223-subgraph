@@ -1,4 +1,5 @@
-const WETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
+// The WETH9 the UI and the Sepolia router/position manager use.
+const WETH = '0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa'
 const DAI = '0x1e6951b73f44E7C71B43Dfc1FFA63cA2eab2cEdA'
 const USDC = '0x44649c38615ad4426c16cd5d5059e6e74b87234a'
 const USDT = '0x8dD8F439D3478Badb814F7b84d7a06d467eD3812'
@@ -11,7 +12,7 @@ module.exports = {
   WETH: WETH.toLowerCase(),
   v1: {
     // CREATE2 for USDC/WETH 0.3% on factory 0xeA0A… (may not exist until created).
-    WETH_USDC_03_POOL: '0x6ab29B6DfaB7E06dEf97f20E619F653Cb3C6fc89'.toLowerCase(),
+    WETH_USDC_03_POOL: '0x6F8038B79388C16dbe3DF2138B3A05ca1D856Ef8'.toLowerCase(),
     contracts: {
       factory: {
         name: 'Factory',
@@ -21,8 +22,9 @@ module.exports = {
       },
       tokenConverter: {
         name: 'TokenConverter',
-        address: '0xa7d623Dd99fae6f03Bb4A427F1b3FF29fb130108'.toLowerCase(),
-        startBlock: 11755626
+        // The converter the factory uses since collector.execute(factory.set(...)), the same one the UI uses.
+        address: '0x5847f5C0E09182d9e75fE8B1617786F62fee0D9F'.toLowerCase(),
+        startBlock: 8468334 // converter deployment, so wrappers created before the factory are indexed
       }
     },
     stableCoins: [DAI, USDC, USDT].map(token => token.toLowerCase()),
