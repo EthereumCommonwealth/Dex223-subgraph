@@ -16,10 +16,12 @@ export const USDC_WETH_03_POOL = '{{ v1.WETH_USDC_03_POOL }}'
 export const WHITELIST_TOKENS: string[] = '{{ v1.whitelistAddresses }}'.split(',')
 
 export const STABLE_COINS: string[] = '{{ v1.stableCoins }}'.split(',')
-export const STABLECOIN_IS_TOKEN0 = true
+// true if the stablecoin sorts before WETH, so it is token0 of USDC_WETH_03_POOL
+export const STABLECOIN_IS_TOKEN0 = {{ v1.stablecoinIsToken0 }}
 
 
-export let MINIMUM_ETH_LOCKED = BigDecimal.fromString('60')
+// in the network's native token, so it differs per network
+export let MINIMUM_ETH_LOCKED = BigDecimal.fromString('{{ v1.minimumEthLocked }}')
 
 export let Q192 = BigDecimal.fromString('6277101735386680763835789423207666416102355444464034512896') // 2^192
 

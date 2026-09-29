@@ -9,6 +9,8 @@ module.exports = {
   WETH: WETH.toLowerCase(),
   v1: {
     WETH_USDC_03_POOL: '0x76E82368C26488D4daf3008a92DDe2477F0bcCa6'.toLowerCase(),
+    stablecoinIsToken0: true,
+    minimumEthLocked: '60',
     contracts: {
       factory: {
         name: 'Factory',

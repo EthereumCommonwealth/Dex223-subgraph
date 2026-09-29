@@ -13,6 +13,8 @@ module.exports = {
   v1: {
     // CREATE2 for USDC/WETH 0.3% on factory 0xeA0A… (may not exist until created).
     WETH_USDC_03_POOL: '0x6F8038B79388C16dbe3DF2138B3A05ca1D856Ef8'.toLowerCase(),
+    stablecoinIsToken0: true,
+    minimumEthLocked: '60',
     contracts: {
       factory: {
         name: 'Factory',

@@ -16,6 +16,8 @@ module.exports = {
     // USDC/WETH 0.3% pool of this factory, prices ETH in USD. USDC is token0 (STABLECOIN_IS_TOKEN0).
     // Derived from the factory and POOL_INIT_CODE_HASH 0xe125...c486; it exists once someone creates it.
     WETH_USDC_03_POOL: '0xaEaD34c58230D771C57905473CceBD936b755373'.toLowerCase(),
+    stablecoinIsToken0: true,
+    minimumEthLocked: '60',
     contracts: {
       factory: {
         name: 'Factory',
