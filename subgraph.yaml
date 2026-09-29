@@ -42,9 +42,9 @@ dataSources:
     name: TokenConverter
     network: sepolia
     source:
-      address: '0xa7d623dd99fae6f03bb4a427f1b3ff29fb130108'
+      address: '0x5847f5c0e09182d9e75fe8b1617786f62fee0d9f'
       abi: TokenConverter
-      startBlock: 11755626
+      startBlock: 8468334
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
