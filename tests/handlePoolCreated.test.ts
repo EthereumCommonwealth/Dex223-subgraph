@@ -4,7 +4,13 @@ import { assert, createMockedFunction, test, describe } from 'matchstick-as/asse
 import { NULL_ETH_HEX_STRING } from '../src/utils'
 import { FACTORY_ADDRESS } from '../src/utils/constants'
 import { StaticTokenDefinition } from '../src/utils/staticTokenDefinition'
-import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from '../src/utils/token'
+import {
+  fetchTokenDecimals,
+  fetchTokenDecimalsOrDefault,
+  fetchTokenName,
+  fetchTokenSymbol,
+  fetchTokenTotalSupply,
+} from '../src/utils/token'
 import {
   assertObjectMatches,
   invokePoolCreatedWithMockedEthCalls,
@@ -274,6 +280,25 @@ describe('handlePoolCreated', () => {
       createMockedFunction(usdcAddressERC223, 'decimals', 'decimals():(uint32)').reverts()
       const decimals: BigInt | null = fetchTokenDecimals(usdcAddressERC20, usdcAddressERC223)
       assert.assertTrue(decimals === null)
+    })
+
+    test('success - token without decimals() defaults to 18 instead of dropping its pool', () => {
+      const usdcAddressERC20 = Address.fromString(USDC_MAINNET_FIXTURE.addressERC20)
+      const usdcAddressERC223 = Address.fromString(USDC_MAINNET_FIXTURE.addressERC223)
+      createMockedFunction(usdcAddressERC20, 'decimals', 'decimals():(uint32)').reverts()
+      createMockedFunction(usdcAddressERC223, 'decimals', 'decimals():(uint32)').reverts()
+      const decimals = fetchTokenDecimalsOrDefault(usdcAddressERC20, usdcAddressERC223, [])
+      assert.assertTrue(decimals == BigInt.fromI32(18))
+    })
+
+    test('success - fetchTokenDecimalsOrDefault keeps real decimals', () => {
+      const usdcAddressERC20 = Address.fromString(USDC_MAINNET_FIXTURE.addressERC20)
+      const usdcAddressERC223 = Address.fromString(USDC_MAINNET_FIXTURE.addressERC223)
+      createMockedFunction(usdcAddressERC20, 'decimals', 'decimals():(uint32)').returns([
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)),
+      ])
+      const decimals = fetchTokenDecimalsOrDefault(usdcAddressERC20, usdcAddressERC223)
+      assert.assertTrue(decimals == BigInt.fromI32(6))
     })
   })
 })
