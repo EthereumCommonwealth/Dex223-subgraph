@@ -1,10 +1,13 @@
 import { Address, log } from '@graphprotocol/graph-ts'
 import { ERC20WrapperCreated, ERC223WrapperCreated } from '../types/TokenConverter/TokenConverter'
 import { TokenConvertible, Token } from '../types/schema'
-import { fetchTokenSymbol, fetchTokenName, fetchTokenDecimalsOrDefault } from '../utils/token'
+import { fetchTokenSymbol, fetchTokenName, fetchTokenDecimals } from '../utils/token'
 
 function saveConverter(addressERC20: Address, addressERC223: Address): void {
-  let decimals = fetchTokenDecimalsOrDefault(addressERC20, addressERC223)
+  let decimals = fetchTokenDecimals(addressERC20, addressERC223)
+  if (decimals === null) {
+    return
+  }
   let id = `${addressERC20.toHexString()}-${addressERC223.toHexString()}`
   let token = TokenConvertible.load(id)
   if (token === null) {
