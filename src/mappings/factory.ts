@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 import { PoolCreated } from '../types/Factory/Factory'
 import { Factory } from '../types/schema'
@@ -6,7 +6,7 @@ import { Bundle, Pool, Token } from '../types/schema'
 import { Pool as PoolTemplate } from '../types/templates'
 import { STATIC_TOKEN_DEFINITIONS, StaticTokenDefinition } from '../utils/staticTokenDefinition'
 import {
-  fetchTokenDecimals,
+  fetchTokenDecimalsOrDefault,
   fetchTokenName,
   fetchTokenSymbol,
   fetchTokenTotalSupply,
@@ -75,13 +75,7 @@ export function handlePoolCreatedHelper(
     token0.totalSupply = fetchTokenTotalSupply(token0AddressERC20, token0AddressERC223)
     token0.addressERC223 = token0AddressERC223.toHexString() || ADDRESS_ZERO
 
-    const decimals = fetchTokenDecimals(token0AddressERC20, token0AddressERC223, staticTokenDefinitions)
-
-    // bail if we couldn't figure out the decimals
-    if (decimals === null) {
-      log.debug('mybug the decimal on token 0 was null', [])
-      return
-    }
+    const decimals = fetchTokenDecimalsOrDefault(token0AddressERC20, token0AddressERC223, staticTokenDefinitions)
 
     token0.inConverter = fetchTokenInConverter(token0AddressERC20)
     token0.decimals = decimals
@@ -105,12 +99,7 @@ export function handlePoolCreatedHelper(
     token1.totalSupply = fetchTokenTotalSupply(token1AddressERC20, token1AddressERC223)
     token1.addressERC223 = token1AddressERC223.toHexString() || ADDRESS_ZERO
 
-    const decimals = fetchTokenDecimals(token1AddressERC20, token1AddressERC223, staticTokenDefinitions)
-    // bail if we couldn't figure out the decimals
-    if (decimals === null) {
-      log.debug('mybug the decimal on token 0 was null', [])
-      return
-    }
+    const decimals = fetchTokenDecimalsOrDefault(token1AddressERC20, token1AddressERC223, staticTokenDefinitions)
     token1.inConverter = fetchTokenInConverter(event.params.token1_erc20)
 
     token1.decimals = decimals

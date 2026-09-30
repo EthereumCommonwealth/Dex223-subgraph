@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 
 import { ERC20andERC223 } from '../types/Factory/ERC20andERC223'
 import { ERC20andERC223NameBytes } from '../types/Factory/ERC20andERC223NameBytes'
@@ -149,6 +149,27 @@ export function fetchTokenDecimals(
     return _fetchTokenDecimals(tokenAddressERC223, staticTokenDefinitions)
   }
   return value
+}
+
+// ERC-20 makes decimals() optional. The Uniswap mapping this came from skipped the whole
+// pool when a token lacked it, so the pool, its liquidity and its swaps never reached the
+// subgraph and the app could not list it. Assume 18, as wallets and the market API do.
+export const DEFAULT_TOKEN_DECIMALS = 18
+
+export function fetchTokenDecimalsOrDefault(
+  tokenAddressERC20: Address,
+  tokenAddressERC223: Address,
+  staticTokenDefinitions: StaticTokenDefinition[] = STATIC_TOKEN_DEFINITIONS
+): BigInt {
+  const value = fetchTokenDecimals(tokenAddressERC20, tokenAddressERC223, staticTokenDefinitions)
+  if (value === null) {
+    log.warning('Token {} has no readable decimals(); assuming {}', [
+      tokenAddressERC20.toHexString(),
+      DEFAULT_TOKEN_DECIMALS.toString(),
+    ])
+    return BigInt.fromI32(DEFAULT_TOKEN_DECIMALS)
+  }
+  return value as BigInt
 }
 
 export function fetchTokenInConverter(addressERC20: Address): boolean {
