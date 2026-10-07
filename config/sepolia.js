@@ -11,16 +11,16 @@ module.exports = {
   network: 'sepolia',
   WETH: WETH.toLowerCase(),
   v1: {
-    // CREATE2 for USDC/WETH 0.3% on factory 0xeA0A… (may not exist until created).
-    WETH_USDC_03_POOL: '0x6F8038B79388C16dbe3DF2138B3A05ca1D856Ef8'.toLowerCase(),
+    // CREATE2 for USDC/WETH 0.3% on factory 0xf07c… with pool hash 0xda78… (may not exist until created).
+    WETH_USDC_03_POOL: '0xc146F2Eff11eAEd03E7A6CdF723678509179C1f4'.toLowerCase(),
     stablecoinIsToken0: true,
     minimumEthLocked: '60',
     contracts: {
       factory: {
         name: 'Factory',
-        // Sepolia redeploy 2026-09-21 (same CREATE2 address as mainnet).
-        address: '0xeA0A163e0196Bf1500B1B41d3ADdA0476dC137eb'.toLowerCase(),
-        startBlock: 11755632
+        // Sepolia v3, 2026-10-07: the factory with the fund-safety fixes (Dex223-contracts #103).
+        address: '0xf07cc56E969Bc08395E80Da099e44d122bFa42B9'.toLowerCase(),
+        startBlock: 11862912
       },
       tokenConverter: {
         name: 'TokenConverter',
