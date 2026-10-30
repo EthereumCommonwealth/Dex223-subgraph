@@ -5,11 +5,11 @@ import { TokenConverter as TokenConverterContract } from '../types/templates/Poo
 
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
-export const FACTORY_ADDRESS = '0xf07cc56e969bc08395e80da099e44d122bfa42b9'
+export const FACTORY_ADDRESS = '0x4ec06106cf666a817586563ae042fff8b76e3460'
 export const TOKEN_CONVERTER_ADDRESS = '0x5847f5c0e09182d9e75fe8b1617786f62fee0d9f'
 
 export const WETH_ADDRESS = '0xb16f35c0ae2912430dac15764477e179d9b9ebea'
-export const USDC_WETH_03_POOL = '0xc146f2eff11eaed03e7a6cdf723678509179c1f4'
+export const USDC_WETH_03_POOL = '0x78d8133ccd0d0cf34b088a870f4f3c5d17fc1ee0'
 
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with s
