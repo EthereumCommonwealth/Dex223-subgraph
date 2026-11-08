@@ -6,6 +6,8 @@ const USDT = '0x8dD8F439D3478Badb814F7b84d7a06d467eD3812'
 // The test USDC and USDT the trading bots deploy and mint, which hold the Sepolia liquidity.
 const TEST_USDC = '0xFC86A38E97F63852B49b61d44Eee4f937251ae1A'
 const TEST_USDT = '0xB8e96EB2A094e889AaCC9491fa0538F28517CC33'
+// RED: the margin order's base asset, priced through RED/test-USDC 0.3% (0xb619…bf7c). Whitelisting it prices TOT1 via RED/TOT1.
+const RED = '0x1DEf777468F76ed1E74fC87bD32334d3Ccb520d0'
 
 /**
  * @type import('./config').NetworkConfig
@@ -41,7 +43,8 @@ module.exports = {
       USDT, // USDT
       DAI, // DAI
       TEST_USDC,
-      TEST_USDT
+      TEST_USDT,
+      RED
     ].map(token => token.toLowerCase())
   }
 }

@@ -13,7 +13,7 @@ export const USDC_WETH_03_POOL = '0xf92214133f4eb757bf389ea7200398d9fc2c8965'
 
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with s
-export const WHITELIST_TOKENS: string[] = '0xb16f35c0ae2912430dac15764477e179d9b9ebea,0x44649c38615ad4426c16cd5d5059e6e74b87234a,0x8dd8f439d3478badb814f7b84d7a06d467ed3812,0x1e6951b73f44e7c71b43dfc1ffa63ca2eab2ceda,0xfc86a38e97f63852b49b61d44eee4f937251ae1a,0xb8e96eb2a094e889aacc9491fa0538f28517cc33'.split(',')
+export const WHITELIST_TOKENS: string[] = '0xb16f35c0ae2912430dac15764477e179d9b9ebea,0x44649c38615ad4426c16cd5d5059e6e74b87234a,0x8dd8f439d3478badb814f7b84d7a06d467ed3812,0x1e6951b73f44e7c71b43dfc1ffa63ca2eab2ceda,0xfc86a38e97f63852b49b61d44eee4f937251ae1a,0xb8e96eb2a094e889aacc9491fa0538f28517cc33,0x1def777468f76ed1e74fc87bd32334d3ccb520d0'.split(',')
 
 export const STABLE_COINS: string[] = '0x1e6951b73f44e7c71b43dfc1ffa63ca2eab2ceda,0x44649c38615ad4426c16cd5d5059e6e74b87234a,0x8dd8f439d3478badb814f7b84d7a06d467ed3812,0xfc86a38e97f63852b49b61d44eee4f937251ae1a,0xb8e96eb2a094e889aacc9491fa0538f28517cc33'.split(',')
 // true if the stablecoin sorts before WETH, so it is token0 of USDC_WETH_03_POOL
