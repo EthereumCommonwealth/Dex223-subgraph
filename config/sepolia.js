@@ -3,6 +3,9 @@ const WETH = '0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa'
 const DAI = '0x1e6951b73f44E7C71B43Dfc1FFA63cA2eab2cEdA'
 const USDC = '0x44649c38615ad4426c16cd5d5059e6e74b87234a'
 const USDT = '0x8dD8F439D3478Badb814F7b84d7a06d467eD3812'
+// The test USDC and USDT the trading bots deploy and mint, which hold the Sepolia liquidity.
+const TEST_USDC = '0xFC86A38E97F63852B49b61d44Eee4f937251ae1A'
+const TEST_USDT = '0xB8e96EB2A094e889AaCC9491fa0538F28517CC33'
 
 /**
  * @type import('./config').NetworkConfig
@@ -11,10 +14,12 @@ module.exports = {
   network: 'sepolia',
   WETH: WETH.toLowerCase(),
   v1: {
-    // CREATE2 for USDC/WETH 0.3% on factory 0xbdC7… with pool hash 0x5944… (may not exist until created).
-    WETH_USDC_03_POOL: '0x35CD182B330B5897Dffb61D95Cc3Bb9997bDEfAe'.toLowerCase(),
-    stablecoinIsToken0: true,
-    minimumEthLocked: '60',
+    // WETH/test-USDC 0.3% on factory 0xbdC7…, created by the bots' seed (2026-11-08). WETH sorts first, so the
+    // stablecoin is token1. The earlier entry used USDC 0x4464…, which holds no Sepolia liquidity, so ETH priced at 0.
+    WETH_USDC_03_POOL: '0xF92214133F4Eb757BF389Ea7200398D9FC2c8965'.toLowerCase(),
+    stablecoinIsToken0: false,
+    // Testnet pools are small; 60 ETH left every token but the stablecoins unpriced.
+    minimumEthLocked: '1',
     contracts: {
       factory: {
         name: 'Factory',
@@ -29,12 +34,14 @@ module.exports = {
         startBlock: 8468334 // converter deployment, so wrappers created before the factory are indexed
       }
     },
-    stableCoins: [DAI, USDC, USDT].map(token => token.toLowerCase()),
+    stableCoins: [DAI, USDC, USDT, TEST_USDC, TEST_USDT].map(token => token.toLowerCase()),
     whitelistAddresses: [
       WETH,
       USDC, // USDC
       USDT, // USDT
-      DAI // DAI
+      DAI, // DAI
+      TEST_USDC,
+      TEST_USDT
     ].map(token => token.toLowerCase())
   }
 }
