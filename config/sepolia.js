@@ -22,6 +22,9 @@ module.exports = {
     stablecoinIsToken0: false,
     // Testnet pools are small; 60 ETH left every token but the stablecoins unpriced.
     minimumEthLocked: '1',
+    // Test USDC in WETH_USDC_03_POOL below which the ETH price keeps its last value. On 2026-11-15 three sales
+    // drained that side to 0 and left the pool at MIN_TICK; in normal trading it never went below 60.
+    minimumStablecoinLocked: '10',
     contracts: {
       factory: {
         name: 'Factory',

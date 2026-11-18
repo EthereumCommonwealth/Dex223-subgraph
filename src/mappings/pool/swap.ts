@@ -13,7 +13,7 @@ import {
 } from '../../utils/intervalUpdates'
 import { findEthPerToken, getEthPriceInUSD, getTrackedAmountUSD, sqrtPriceX96ToTokenPrices } from '../../utils/pricing'
 import { STABLECOIN_IS_TOKEN0, USDC_WETH_03_POOL, WETH_ADDRESS, WHITELIST_TOKENS } from '../../utils/constants'
-import { MINIMUM_ETH_LOCKED, STABLE_COINS } from '../../utils/constants'
+import { MINIMUM_ETH_LOCKED, MINIMUM_STABLECOIN_LOCKED, STABLE_COINS } from '../../utils/constants'
 
 export function handleSwap(event: SwapEvent): void {
   handleSwapHelper(event)
@@ -26,7 +26,8 @@ export function handleSwapHelper(
   wrappedNativeAddress: string = WETH_ADDRESS,
   stablecoinAddresses: string[] = STABLE_COINS,
   minimumEthLocked: BigDecimal = MINIMUM_ETH_LOCKED,
-  whitelistTokens: string[] = WHITELIST_TOKENS
+  whitelistTokens: string[] = WHITELIST_TOKENS,
+  minimumStablecoinLocked: BigDecimal = MINIMUM_STABLECOIN_LOCKED
 ): void {
   const bundle = Bundle.load('1')!
   const factory = Factory.load(FACTORY_ADDRESS)!
@@ -123,7 +124,11 @@ export function handleSwapHelper(
     pool.save()
 
     // update USD pricing
-    bundle.ethPriceUSD = getEthPriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0)
+    bundle.ethPriceUSD = getEthPriceInUSD(
+      stablecoinWrappedNativePoolAddress,
+      stablecoinIsToken0,
+      minimumStablecoinLocked
+    )
     bundle.save()
     token0.derivedETH = findEthPerToken(token0 as Token, wrappedNativeAddress, stablecoinAddresses, minimumEthLocked)
     token1.derivedETH = findEthPerToken(token1 as Token, wrappedNativeAddress, stablecoinAddresses, minimumEthLocked)

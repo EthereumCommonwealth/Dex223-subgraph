@@ -10,6 +10,7 @@ import {
   WHITELIST_TOKENS,
   STABLE_COINS,
   MINIMUM_ETH_LOCKED,
+  MINIMUM_STABLECOIN_LOCKED,
   Q192
 } from './constants'
 
@@ -25,12 +26,38 @@ export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, t
   return [price0, price1]
 }
 
+/**
+ * False when the ETH price pool's own price says nothing about ETH: it has no liquidity in range (a sale ran past
+ * every position, as on Sepolia on 2026-11-15, which left the pool at MIN_TICK), or its stablecoin side is sold
+ * down below minimumStablecoinLocked (0 turns that check off).
+ */
+function ethPricePoolIsUsable(pool: Pool, stablecoinIsToken0: boolean, minimumStablecoinLocked: BigDecimal): boolean {
+  if (!pool.liquidity.gt(ZERO_BI)) {
+    return false
+  }
+  if (minimumStablecoinLocked.le(ZERO_BD)) {
+    return true
+  }
+  const stablecoinLocked = stablecoinIsToken0 ? pool.totalValueLockedToken0 : pool.totalValueLockedToken1
+  return stablecoinLocked.ge(minimumStablecoinLocked)
+}
+
 export function getEthPriceInUSD(
   stablecoinWrappedNativePoolAddress: string = USDC_WETH_03_POOL,
-  stablecoinIsToken0: boolean = STABLECOIN_IS_TOKEN0 // true is stablecoin is token0, false if stablecoin is token1
+  stablecoinIsToken0: boolean = STABLECOIN_IS_TOKEN0, // true is stablecoin is token0, false if stablecoin is token1
+  minimumStablecoinLocked: BigDecimal = MINIMUM_STABLECOIN_LOCKED
 ): BigDecimal {
   const stablecoinWrappedNativePool = Pool.load(stablecoinWrappedNativePoolAddress)
   if (stablecoinWrappedNativePool !== null) {
+    // Keep the last ETH price while the pool cannot give one. The first price is read from the pool as before.
+    const bundle = Bundle.load('1')
+    if (
+      bundle !== null &&
+      bundle.ethPriceUSD.gt(ZERO_BD) &&
+      !ethPricePoolIsUsable(stablecoinWrappedNativePool, stablecoinIsToken0, minimumStablecoinLocked)
+    ) {
+      return bundle.ethPriceUSD
+    }
     return stablecoinIsToken0 ? stablecoinWrappedNativePool.token0Price : stablecoinWrappedNativePool.token1Price
   } else {
     return ZERO_BD

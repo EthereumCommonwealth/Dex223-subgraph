@@ -18,6 +18,8 @@ module.exports = {
     WETH_USDC_03_POOL: '0xaEaD34c58230D771C57905473CceBD936b755373'.toLowerCase(),
     stablecoinIsToken0: true,
     minimumEthLocked: '60',
+    // USDC in WETH_USDC_03_POOL below which the ETH price keeps its last value (getEthPriceInUSD).
+    minimumStablecoinLocked: '100',
     contracts: {
       factory: {
         name: 'Factory',

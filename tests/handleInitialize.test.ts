@@ -5,7 +5,7 @@ import { handleInitializeHelper } from '../src/mappings/pool/initialize'
 import { Bundle, Pool, Token } from '../src/types/schema'
 import { Initialize } from '../src/types/templates/Pool/Pool'
 import { safeDiv } from '../src/utils'
-import { ADDRESS_ZERO, ZERO_BD } from '../src/utils/constants'
+import { ADDRESS_ZERO, ZERO_BD, ZERO_BI } from '../src/utils/constants'
 import { findEthPerToken, getEthPriceInUSD } from '../src/utils/pricing'
 import {
   assertObjectMatches,
@@ -102,6 +102,12 @@ describe('handleInitialize', () => {
   })
 })
 
+function saveEthPriceUSD(ethPriceUSD: BigDecimal): void {
+  const bundle = new Bundle('1')
+  bundle.ethPriceUSD = ethPriceUSD
+  bundle.save()
+}
+
 describe('getEthPriceInUSD', () => {
   beforeEach(() => {
     clearStore()
@@ -141,6 +147,64 @@ describe('getEthPriceInUSD', () => {
 
     const ethPriceUSD = getEthPriceInUSD(ADDRESS_ZERO)
     assert.assertTrue(ethPriceUSD == BigDecimal.fromString('0'))
+  })
+
+  test('success - healthy pool sets the price over the previous one', () => {
+    saveEthPriceUSD(TEST_ETH_PRICE_USD)
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    pool.liquidity = BigInt.fromString('2632671270799841')
+    pool.totalValueLockedToken0 = BigDecimal.fromString('5066.918773')
+    pool.token0Price = BigDecimal.fromString('1809.837026')
+    pool.save()
+
+    const ethPriceUSD = getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, BigDecimal.fromString('100'))
+
+    assert.assertTrue(ethPriceUSD == BigDecimal.fromString('1809.837026'))
+  })
+
+  test('success - pool with no liquidity in range keeps the previous price', () => {
+    // a sale ran past the last position: the pool sits at the tick limit and its price is meaningless
+    saveEthPriceUSD(TEST_ETH_PRICE_USD)
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    pool.liquidity = ZERO_BI
+    pool.totalValueLockedToken0 = BigDecimal.fromString('5066.918773')
+    pool.token0Price = BigDecimal.fromString('0.000000000000000000000000002939')
+    pool.token1Price = BigDecimal.fromString('0.000000000000000000000000002939')
+    pool.save()
+
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, ZERO_BD) == TEST_ETH_PRICE_USD)
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, false, ZERO_BD) == TEST_ETH_PRICE_USD)
+  })
+
+  test('success - stablecoin side below the floor keeps the previous price', () => {
+    saveEthPriceUSD(TEST_ETH_PRICE_USD)
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    pool.liquidity = BigInt.fromString('2632671270799841')
+    pool.totalValueLockedToken0 = BigDecimal.fromString('5')
+    pool.totalValueLockedToken1 = BigDecimal.fromString('5000')
+    pool.token0Price = BigDecimal.fromString('0.5')
+    pool.token1Price = BigDecimal.fromString('2')
+    pool.save()
+
+    const floor = BigDecimal.fromString('10')
+    // token0 is the stablecoin and holds 5 of it: held
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, floor) == TEST_ETH_PRICE_USD)
+    // the floor reads the stablecoin's side only: with token1 as the stablecoin, 5000 is enough
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, false, floor) == BigDecimal.fromString('2'))
+    // a floor of 0 turns the check off
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, ZERO_BD) == BigDecimal.fromString('0.5'))
+  })
+
+  test('success - first price, with no previous price, is read from the pool as before', () => {
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    pool.token0Price = BigDecimal.fromString('1')
+    pool.save()
+    const floor = BigDecimal.fromString('10')
+
+    // no liquidity and no stablecoin locked, but nothing to keep: no Bundle yet, then a Bundle still at 0
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, floor) == BigDecimal.fromString('1'))
+    saveEthPriceUSD(ZERO_BD)
+    assert.assertTrue(getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, floor) == BigDecimal.fromString('1'))
   })
 })
 

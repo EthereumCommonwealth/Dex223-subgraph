@@ -23,6 +23,9 @@ export const STABLECOIN_IS_TOKEN0 = {{ v1.stablecoinIsToken0 }}
 // in the network's native token, so it differs per network
 export let MINIMUM_ETH_LOCKED = BigDecimal.fromString('{{ v1.minimumEthLocked }}')
 
+// in units of the stablecoin in USDC_WETH_03_POOL: with less of it there, the ETH price keeps its last value (0 = off)
+export let MINIMUM_STABLECOIN_LOCKED = BigDecimal.fromString('{{ v1.minimumStablecoinLocked }}')
+
 export let Q192 = BigDecimal.fromString('6277101735386680763835789423207666416102355444464034512896') // 2^192
 
 export let ZERO_BI = BigInt.fromI32(0)

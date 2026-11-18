@@ -5,6 +5,7 @@ import { Initialize } from '../../types/templates/Pool/Pool'
 import { updatePoolDayData, updatePoolHourData } from '../../utils/intervalUpdates'
 import {
   MINIMUM_ETH_LOCKED,
+  MINIMUM_STABLECOIN_LOCKED,
   STABLE_COINS,
   STABLECOIN_IS_TOKEN0,
   USDC_WETH_03_POOL,
@@ -22,7 +23,8 @@ export function handleInitializeHelper(
   stablecoinIsToken0: boolean = STABLECOIN_IS_TOKEN0,
   wrappedNativeAddress: string = WETH_ADDRESS,
   stablecoinAddresses: string[] = STABLE_COINS,
-  minimumEthLocked: BigDecimal = MINIMUM_ETH_LOCKED
+  minimumEthLocked: BigDecimal = MINIMUM_ETH_LOCKED,
+  minimumStablecoinLocked: BigDecimal = MINIMUM_STABLECOIN_LOCKED
 ): void {
   // update pool sqrt price and tick
   const pool = Pool.load(event.address.toHexString())!
@@ -36,7 +38,7 @@ export function handleInitializeHelper(
 
   // update ETH price now that prices could have changed
   const bundle = Bundle.load('1')!
-  bundle.ethPriceUSD = getEthPriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0)
+  bundle.ethPriceUSD = getEthPriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0, minimumStablecoinLocked)
   bundle.save()
 
   updatePoolDayData(event)
