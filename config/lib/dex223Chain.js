@@ -9,7 +9,17 @@
 const FACTORY = '0xeA0A163e0196Bf1500B1B41d3ADdA0476dC137eb'
 const CONVERTER = '0xa7d623Dd99fae6f03Bb4A427F1b3FF29fb130108'
 
-module.exports = function dex223Chain({ chain, network, wrappedNative, stableCoins, pricingPool, minimumEthLocked, startBlocks }) {
+module.exports = function dex223Chain({
+  chain,
+  network,
+  wrappedNative,
+  stableCoins,
+  pricingPool,
+  minimumEthLocked,
+  // stableCoins[0] in pricingPool below which the ETH price keeps its last value; '0' leaves only the no-liquidity check
+  minimumStablecoinLocked = '0',
+  startBlocks
+}) {
   if (!startBlocks.converter || !startBlocks.factory) {
     throw new Error(`config/${chain}.js: set startBlocks from Dex223-contracts deployments/${chain}.json (block:converter, block:factory)`)
   }
@@ -25,6 +35,7 @@ module.exports = function dex223Chain({ chain, network, wrappedNative, stableCoi
       WETH_USDC_03_POOL: lower(pricingPool),
       stablecoinIsToken0: pricingStable < lower(wrappedNative),
       minimumEthLocked,
+      minimumStablecoinLocked,
       contracts: {
         factory: { name: 'Factory', address: lower(FACTORY), startBlock: startBlocks.factory },
         tokenConverter: { name: 'TokenConverter', address: lower(CONVERTER), startBlock: startBlocks.converter }

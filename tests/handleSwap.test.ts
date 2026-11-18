@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { beforeAll, describe, test } from 'matchstick-as'
+import { assert, beforeAll, clearStore, describe, test } from 'matchstick-as'
 
 import { handleSwapHelper } from '../src/mappings/pool/swap'
-import { Bundle, Token } from '../src/types/schema'
+import { Bundle, Pool, Token } from '../src/types/schema'
 import { Swap } from '../src/types/templates/Pool/Pool'
 import { convertTokenToDecimal, safeDiv } from '../src/utils'
 import { FACTORY_ADDRESS, ZERO_BD } from '../src/utils/constants'
@@ -128,15 +128,20 @@ describe('handleSwap', () => {
       wrappedNativeAddress,
       stablecoinAddresses,
       minimumEthLocked,
-      whitelistTokens
+      whitelistTokens,
+      // the fixture swap takes USDC out of an empty pool, so its USDC TVL goes negative: no floor here
+      ZERO_BD
     )
 
-    const newEthPrice = getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true)
+    const newEthPrice = getEthPriceInUSD(USDC_WETH_03_MAINNET_POOL, true, ZERO_BD)
     const newPoolPrices = sqrtPriceX96ToTokenPrices(SWAP_FIXTURE.sqrtPriceX96, token0, token1)
     const newToken0DerivedETH = findEthPerToken(token0, wrappedNativeAddress, stablecoinAddresses, minimumEthLocked)
     const newToken1DerivedETH = findEthPerToken(token1, wrappedNativeAddress, stablecoinAddresses, minimumEthLocked)
 
     const totalValueLockedETH = amount0.times(newToken0DerivedETH).plus(amount1.times(newToken1DerivedETH))
+
+    // healthy pool: the ETH price comes from the pool (USDC per WETH)
+    assertObjectMatches('Bundle', '1', [['ethPriceUSD', newPoolPrices[0].toString()]])
 
     assertObjectMatches('Factory', FACTORY_ADDRESS, [
       ['txCount', '1'],
@@ -268,5 +273,93 @@ describe('handleSwap', () => {
       ['untrackedVolumeUSD', amountTotalUSDTracked.toString()],
       ['feesUSD', feesUSD.toString()]
     ])
+  })
+})
+
+// Sepolia, 2026-11-15, block 12137747: a 0.0866 WETH sale took the pool's last 148.389 USDC and ran below tick -201840,
+// the bottom of every position, on to MIN_TICK with no liquidity left. WETH is token0 here, as on Sepolia.
+const DRAINING_SWAP_EVENT = new Swap(
+  Address.fromString(USDC_WETH_03_MAINNET_POOL),
+  MOCK_EVENT.logIndex,
+  MOCK_EVENT.transactionLogIndex,
+  MOCK_EVENT.logType,
+  MOCK_EVENT.block,
+  MOCK_EVENT.transaction,
+  [
+    new ethereum.EventParam('sender', ethereum.Value.fromAddress(SWAP_FIXTURE.sender)),
+    new ethereum.EventParam('recipient', ethereum.Value.fromAddress(SWAP_FIXTURE.recipient)),
+    new ethereum.EventParam('amount0', ethereum.Value.fromSignedBigInt(BigInt.fromString('86604000000000000'))),
+    new ethereum.EventParam('amount1', ethereum.Value.fromSignedBigInt(BigInt.fromString('-148389000'))),
+    // MIN_SQRT_RATIO + 1
+    new ethereum.EventParam('sqrtPriceX96', ethereum.Value.fromUnsignedBigInt(BigInt.fromString('4295128740'))),
+    new ethereum.EventParam('liquidity', ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))),
+    new ethereum.EventParam('tick', ethereum.Value.fromI32(-887272))
+  ],
+  MOCK_EVENT.receipt
+)
+
+describe('handleSwap - ETH price pool sold past its last position', () => {
+  beforeAll(() => {
+    clearStore()
+    invokePoolCreatedWithMockedEthCalls(
+      MOCK_EVENT,
+      FACTORY_ADDRESS,
+      WETH_MAINNET_FIXTURE,
+      USDC_MAINNET_FIXTURE,
+      USDC_WETH_03_MAINNET_POOL,
+      POOL_FEE_TIER_03,
+      POOL_TICK_SPACING_03
+    )
+
+    const bundle = new Bundle('1')
+    bundle.ethPriceUSD = TEST_ETH_PRICE_USD
+    bundle.save()
+
+    const usdcEntity = Token.load(USDC_MAINNET_FIXTURE.addressERC20)!
+    usdcEntity.derivedETH = TEST_USDC_DERIVED_ETH
+    usdcEntity.save()
+
+    const wethEntity = Token.load(WETH_MAINNET_FIXTURE.addressERC20)!
+    wethEntity.derivedETH = TEST_WETH_DERIVED_ETH
+    wethEntity.save()
+
+    // the pool just before the sale: three positions in range, about 3 WETH and 148.389 USDC
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    pool.liquidity = BigInt.fromString('2936484462727944')
+    pool.totalValueLockedToken0 = BigDecimal.fromString('3.003767')
+    pool.totalValueLockedToken1 = BigDecimal.fromString('148.389')
+    pool.save()
+  })
+
+  test('success - keeps the previous ETH price and the stablecoin price', () => {
+    const wrappedNativeAddress = WETH_MAINNET_FIXTURE.addressERC20
+    const stablecoinAddresses = [USDC_MAINNET_FIXTURE.addressERC20]
+    const whitelistTokens = [USDC_MAINNET_FIXTURE.addressERC20, WETH_MAINNET_FIXTURE.addressERC20]
+
+    handleSwapHelper(
+      DRAINING_SWAP_EVENT,
+      USDC_WETH_03_MAINNET_POOL,
+      false,
+      wrappedNativeAddress,
+      stablecoinAddresses,
+      ZERO_BD,
+      whitelistTokens,
+      // floor off, so only the empty range holds the price
+      ZERO_BD
+    )
+
+    // the pool itself records where the sale left it
+    assertObjectMatches('Pool', USDC_WETH_03_MAINNET_POOL, [
+      ['liquidity', '0'],
+      ['tick', '-887272'],
+      ['totalValueLockedToken1', '0']
+    ])
+    const pool = Pool.load(USDC_WETH_03_MAINNET_POOL)!
+    assert.assertTrue(pool.token1Price.lt(BigDecimal.fromString('0.000000000000000000000001')))
+
+    // without the guard this was ~3e-27, and USDC's derivedETH ~3e26
+    assertObjectMatches('Bundle', '1', [['ethPriceUSD', TEST_ETH_PRICE_USD.toString()]])
+    assertObjectMatches('Token', USDC_MAINNET_FIXTURE.addressERC20, [['derivedETH', TEST_USDC_DERIVED_ETH.toString()]])
+    assertObjectMatches('Token', WETH_MAINNET_FIXTURE.addressERC20, [['derivedETH', '1']])
   })
 })
